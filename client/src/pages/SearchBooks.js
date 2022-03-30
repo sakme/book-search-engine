@@ -12,7 +12,7 @@ const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
-  const [ saveBook, { error } ] = useMutation(SAVE_BOOK);
+  const [ saveBook ] = useMutation(SAVE_BOOK);
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
@@ -46,6 +46,7 @@ const SearchBooks = () => {
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
+        link: book.volumeInfo.previewLink || ''
       }));
 
       setSearchedBooks(bookData);
@@ -125,6 +126,9 @@ const SearchBooks = () => {
                   <Card.Title>{book.title}</Card.Title>
                   <p className='small'>Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
+                  {book.link ? (
+                    <Card.Link href={book.link} target="_blank">Buy</Card.Link>
+                    ) : null }
                   {Auth.loggedIn() && (
                     <Button
                       disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
@@ -135,7 +139,6 @@ const SearchBooks = () => {
                         : 'Save this Book!'}
                     </Button>
                   )}
-                  {error && <div>Oops</div>}
                 </Card.Body>
               </Card>
             );
